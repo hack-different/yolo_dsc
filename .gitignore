@@ -9,3 +9,11 @@ install_manifest.txt
 compile_commands.json
 CTestTestfile.cmake
 _deps
+
+yolo_dsc
+
+/cmake-build-*
+
+.DS_Store
+.idea/
+.vscode/
