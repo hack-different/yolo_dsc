@@ -17,3 +17,4 @@ yolo_dsc
 .DS_Store
 .idea/
 .vscode/
+/build
