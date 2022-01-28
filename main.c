@@ -5,12 +5,6 @@
 #include <unistd.h>
 #include <dlfcn.h>
 
-/*#ifndef __x86_64__
-#   error "Must build for x86_64"
-#endif
-*/
-// Unnecessary - works on ARM64e (M1), with correct fixups (checked in IDA Pro 7.7)
-
 bool assert_perror_dlfcn(int *val, char* fn) {
     if (val == 0) {
         perror(fn);
