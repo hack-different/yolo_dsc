@@ -5,10 +5,6 @@
 #include <unistd.h>
 #include <dlfcn.h>
 
-#ifndef __x86_64__
-#   error "Must build for x86_64"
-#endif
-
 typedef int (*extract_function)(const char* shared_cache_file_path, const char* extraction_root_path, void (^progress)(unsigned current, unsigned total));
 
 int main(int argc, char* argv[]) {
