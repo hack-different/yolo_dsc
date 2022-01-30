@@ -5,6 +5,14 @@
 #include <unistd.h>
 #include <dlfcn.h>
 
+bool assert_perror_dlfcn(int *val, char* fn) {
+    if (val == 0) {
+        perror(fn);
+        return false;
+    }
+    return true;
+}
+
 typedef int (*extract_function)(const char* shared_cache_file_path, const char* extraction_root_path, void (^progress)(unsigned current, unsigned total));
 
 int main(int argc, char* argv[]) {
@@ -18,18 +26,16 @@ int main(int argc, char* argv[]) {
 
     bundle = dlopen("/usr/lib/dsc_extractor.bundle", RTLD_NOW);
 
-    if (bundle == NULL) {
-        fprintf(stderr, "dsc_extractor.bundle could not be loaded from /usr/lib/\n");
-        return -1;
+
+    if (assert_perror_dlfcn(bundle, "dlopen dsc_extractor") != true) {
+        exit(EXIT_FAILURE);
     }
 
     extract = (extract_function)dlsym(bundle, "dyld_shared_cache_extract_dylibs_progress");
 
-    if (extract == NULL) {
-        fprintf(stderr, "dsc_extractor.bundle did not have dyld_shared_cache_extract_dylibs_progress symbol.\n\nThey must have changed the API and we're not that brave...\n");
-        return 1;
+    if (assert_perror_dlfcn((int *)extract, "dlsym dyld_shared_cache_extract_dylibs_progress") != true) {
+        exit(EXIT_FAILURE);
     }
-
 
     void (^callback)(unsigned current, unsigned total) = ^(unsigned int current, unsigned int total) {
         printf("Progress: %d/%d\n", current, total);
@@ -41,6 +47,9 @@ int main(int argc, char* argv[]) {
         printf("Failed to call extract (error %d)\n", result);
         exit(-1);
     }
+    //What does result return on failure and exit? Might be better to leave well enough alone.
+    //I'm lazy.
+
     printf("Finished!\n");
     return result;
 }
