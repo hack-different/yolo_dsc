@@ -5,14 +5,19 @@
 #include <unistd.h>
 #include <dlfcn.h>
 
+const char* app_name = "yolo_dsc";
+
 typedef int (*extract_function)(const char* shared_cache_file_path, const char* extraction_root_path, void (^progress)(unsigned current, unsigned total));
 
 int main(int argc, char* argv[]) {
     void* bundle = NULL;
     extract_function extract = NULL;
 
-    if ( argc != 3 ) {
-        fprintf(stderr, "usage: dsc_extractor <path-to-cache-file> <path-to-device-dir>\n");
+    if (argc != 3) {
+        if (argc >= 1) {
+            app_name = argv[0];
+        }
+        fprintf(stderr, "usage: %s <path-to-cache-file> <path-to-device-dir>\n", app_name);
         return -1;
     }
 
